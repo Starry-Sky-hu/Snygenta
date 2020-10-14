@@ -21,5 +21,5 @@ gatk SelectVariants -R ${ref} \
 
 gatk VariantsToTable -R ${ref} \
                       -V ${resultPath}/SNPoutput.vcf.gz \
-
+                      -F CHROM -F POS -F REF -F ALT -GF GT
                       -O ${resultPath}/SNPoutput.table
