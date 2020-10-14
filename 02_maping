@@ -10,8 +10,9 @@ for i in $(seq 0 ${i_max})
 do
   cd ${path}/${species[i]}
   bwa mem -t 8 -R "@RG\tID:${species[i]}\tSM:${species[i]}\tPL:illumina" ${ref} ${species}_1* ${species}_2* > ${resultPath}/${species[i]}_aligned_reads.sam
-  samtools -@ 8 sort ${resultPath}/${species[i]}_aligned_reads.sam -o ${resultPath}/${species[i]}_sort.bam
-  samtools -@ 8 rmdup ${resultPath}/${species[i]}_sort.bam ${resultPath}/${species[i]}_sort_rmduped.bam
-  samtools -@ 8 index ${resultPath}/${species[i]}_sort_rmduped.bam
+  samtools sort -@ 8 ${resultPath}/${species[i]}_aligned_reads.sam -o ${resultPath}/${species[i]}_sort.bam
+  samtools rmdup ${resultPath}/${species[i]}_sort.bam ${resultPath}/${species[i]}_sort_rmduped.bam
+  #samtools rmdup don't have '-@' option
+  samtools index -@ 8 ${resultPath}/${species[i]}_sort_rmduped.bam
   gatk HaplotypeCaller -R ${ref} -I ${resultPath}/${species[i]}_sort_rmduped.bam -O ${resultPath}/${species[i]}.g.vcf.gz -ERC GVCF
 done
